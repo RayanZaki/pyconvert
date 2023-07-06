@@ -24,7 +24,8 @@ def getPrices(option="avg", sell=False, sleep=3):
     if option not in options:
         print("Not a valid option!")
         return
-    print("Loading page...")
+        
+    print("Loading data from binance...")
 
     # Set MOZ_HEADLESS environment variable
     os.environ['MOZ_HEADLESS'] = '1'
