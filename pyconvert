@@ -1,0 +1,49 @@
+#!/usr/bin/env python
+
+import argparse
+from binance import getPrices
+
+
+currencies = {
+    "usd": "$",
+    "dzd": "DZD"
+}
+
+# Create an arg parser
+parser = argparse.ArgumentParser(description="Command for Converting back and fourth between DZD and USD by using the USDT cryptocurrency")
+
+parser.add_argument("-f", "--from",default="usd", choices=currencies.keys(),dest="source",  help="The base currency")
+
+parser.add_argument("-t", "--to", default="dzd", choices=currencies.keys(), dest="dest",  help="The target currency")
+
+parser.add_argument("-p", default=0, dest="price", required=False, help="The custom price of 1 USDT")
+
+
+parser.add_argument("-b", dest="best", action='store_true', help="If specified give the best value of USDT in market, else give the average of the top sellers' prices")
+
+parser.add_argument("amount", help="The amount to be converted")
+
+
+args = parser.parse_args()
+
+
+if args.source == args.dest:
+    price = args.amount
+    print(f"{price} {currencies[args.dest]}")
+    exit(0)
+
+# Get the USDT Prices from Binance
+usdt_in_usd = 0.99
+
+if args.source == "dzd" and args.dest == "usd":
+    usdt_in_dzd = getPrices("best" if args.best else "avg", sell=False) if not args.price else float(args.price)
+    usdt = float(args.amount) / usdt_in_dzd
+    price = round(usdt * usdt_in_usd, 2)
+
+elif args.source == "usd" and args.dest == "dzd":
+    usdt_in_dzd = getPrices("best" if args.best else "avg", sell=True) if not args.price else float(args.price)
+    usdt =  float(args.amount) / usdt_in_usd
+    price = round(usdt * usdt_in_dzd, 2)
+
+
+print(f"{price} {currencies[args.dest]}")
