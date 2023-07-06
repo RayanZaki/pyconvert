@@ -54,6 +54,7 @@ def getPrices(option="avg", sell=False, sleep=3):
     driver.quit()
 
     if prices == []: # If the page did not load, increase the sleep time
+        print("Could not load prices info, retrying ...")
         price = getPrices(option,sell=sell, sleep=sleep + 2)
     elif option == "avg":
         price = round(np.mean(prices), 2)
